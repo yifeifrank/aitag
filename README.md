@@ -54,16 +54,9 @@ responses <- get_response(your_dataframe)
 
 We welcome contributions to the GPT-annotator package. If you find a bug or have a feature request, please open an issue on the GitHub repository. If you would like to contribute code, please fork the repository and submit a pull request.
 
-## License
-
-The GPT-annotator package is released under the MIT License. See the `LICENSE` file for more information.
-
 ## Acknowledgments
 This package is based on the code from Haohan Chen's lecture on annotating political documents with ChatGPT, available at [https://github.com/haohanchen/Lecture_ChatGPT](https://github.com/haohanchen/Lecture_ChatGPT).
 I would like to thank Haohan Chen for providing the initial code and inspiration for this package through his lecture on annotating political documents with ChatGPT.
-
-Citations:
-[1] https://github.com/haohanchen/Lecture_ChatGPT
 
 ## License
 
