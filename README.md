@@ -1,4 +1,4 @@
-# gpt_annotater
+# gpt_annotator
 
 `gpt_annotate` is an R package that provides functions to annotate data using OpenAI's GPT models. It serves as a basic infrastructure for GPT-assisted research and can be used as an alternative to writing complex regular expressions.
 
