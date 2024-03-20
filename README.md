@@ -36,7 +36,7 @@ Sys.setenv(openai_url = "https://api.openai.com/v1/chat/completions")
 Then, load the package and use the `gpt_annotate` function to annotate your text data:
 
 ```r
-library(GPT-annotator)
+library(aitag)
 
 # Annotate data
 gpt_annotate(your_dataframe, instruction = "Your instruction")
