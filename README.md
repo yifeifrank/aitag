@@ -21,7 +21,7 @@ You can install the aitag package from GitHub using the `devtools` package:
 install.packages("devtools")
 
 # Install GPT-annotator from GitHub
-devtools::install_github("your_username/GPT-annotator")
+devtools::install_github("Zeryfrank/aitag")
 ```
 
 ## Usage
