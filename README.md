@@ -32,7 +32,7 @@ Sys.setenv(openai_api = "your_api_key")
 Sys.setenv(openai_url = "https://api.openai.com")
 ```
 
-Then, load the package and use the `gpt_annotate` function to annotate your text data:
+Then, load the package and use the `aitag` function to annotate your text data:
 
 ```r
 library(aitag)
