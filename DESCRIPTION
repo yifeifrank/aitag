@@ -1,6 +1,6 @@
 Package: aitag
 Title: Annotate Text Data Using OpenAI's GPT API
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: person("Yifei", "Zhu", , "frankyifei@connect.hku.hk", role = c("aut", "cre"))
 Description: This package provides functions to annotate text data using OpenAI's GPT API based on a provided instruction. The main function sends text data from a data frame to the GPT API and saves the responses as RDS files in a directory structure.
 License: MIT + file LICENSE
@@ -14,3 +14,5 @@ Imports:
   purrr,
   stringr,
   tibble
+URL: https://github.com/Zeryfrank/GPT-annotater/
+BugReports: https://github.com/Zeryfrank/GPT-annotater/issues
