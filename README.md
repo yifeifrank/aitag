@@ -26,11 +26,11 @@ devtools::install_github("Zeryfrank/aitag")
 
 ## Usage
 
-To use the GPT-annotator package, you need to set up your OpenAI API key and URL as system environment variables:
+To use the GPT-annotator package, you need to set up your OpenAI API key and URL as system environment variables (no need to add v1/chat/completions in openai_url:
 
 ```r
 Sys.setenv(openai_api = "your_api_key")
-Sys.setenv(openai_url = "https://api.openai.com/v1/chat/completions")
+Sys.setenv(openai_url = "https://api.openai.com")
 ```
 
 Then, load the package and use the `gpt_annotate` function to annotate your text data:
