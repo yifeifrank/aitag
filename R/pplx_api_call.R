@@ -28,10 +28,11 @@
 #' @export
 tag_perplexity <- function(column,
                            instruction = "Be precise and concise.",
-                           api_key = base::Sys.getenv("perplexity_key"),
+                           api_key = "",
                            model = "mistral-7b-instruct",
                            api_url = "https://api.perplexity.ai/chat/completions") {
   columnname <- base::deparse(base::substitute(column))
+  api_key <- base::Sys.getenv("perplexity_key")
   api_key <- as.character(api_key)
   filepath <- stringr::str_c("LLMoutput/", columnname, "/",model,"/")
   if (!base::dir.exists(filepath)) {
