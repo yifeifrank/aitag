@@ -32,6 +32,7 @@ tag_perplexity <- function(column,
                            model = "mistral-7b-instruct",
                            api_url = "https://api.perplexity.ai/chat/completions") {
   columnname <- base::deparse(base::substitute(column))
+  api_key <- as.character(api_key)
   filepath <- stringr::str_c("LLMoutput/", columnname, "/",model,"/")
   if (!base::dir.exists(filepath)) {
     base::dir.create(filepath, recursive = TRUE)

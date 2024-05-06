@@ -28,7 +28,7 @@ GPT-generated annotations.
 \dontrun{
 my_data <- data.frame(
 id = 1:3,
-text = c("Example text 1", "Example text 2", "Example text 3")
+text = c("The cake is tasty", "The cake is terrible", "The cake is okay")
 )
 
 gpt_annotate(my_data, "Classify the sentiment of this text as positive, negative or neutral.")
