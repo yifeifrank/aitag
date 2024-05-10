@@ -7,7 +7,7 @@
 tag_perplexity(
   column,
   instruction = "Be precise and concise.",
-  api_key = base::Sys.getenv("perplexity_key"),
+  api_key = "",
   model = "mistral-7b-instruct",
   api_url = "https://api.perplexity.ai/chat/completions"
 )
