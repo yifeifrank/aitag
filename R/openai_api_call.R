@@ -86,7 +86,7 @@ tag_gpt <- function(column,
       }
     }
     if (!success) {
-      base::stop("Failed to fetch data after ", max_attempts, " attempts.")
+      result_df <- paste0("Failed to fetch data after ", max_attempts, " attempts.")
     }
   }
   return(result_df)
