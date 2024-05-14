@@ -64,7 +64,7 @@ tag_perplexity <- function(column,
               list(role = "user", content = to_annotate_text)
             )
           ),
-          httr::timeout(5000)  # Correctly placed inside the POST function call
+          httr::timeout(10000)  # Correctly placed inside the POST function call
         )
         success <- TRUE
         response_content <- httr::content(response, "parsed")

@@ -66,7 +66,7 @@ tag_gpt <- function(column,
               list(role = "user", content = to_annotate_text)
             )
           ),
-          httr::timeout(5000)
+          httr::timeout(10000)
         )
         success <- TRUE
         to_annotate_gptLabel <- httr::content(response)$choices[[1]]$message$content
