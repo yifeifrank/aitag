@@ -17,7 +17,7 @@ tag_gpt(
 \item{column}{A character vector containing the text data to be annotated.}
 
 \item{instruction}{A character string containing the instruction for the GPT model to follow
-when annotating the text data.}
+when annotating the text data. Default is an empty string.}
 
 \item{temperature}{Numeric. The temperature parameter for the GPT model, controlling the
 randomness of the generated annotations. Default is 0.}
@@ -31,19 +31,22 @@ from the "openai_key" environment variable.}
 "openai_url" environment variable.}
 }
 \value{
-This function does not return a value. It saves the GPT responses as RDS files in a
-directory named "LLMoutput/{columnname}/{model}.rds".
+A data frame containing the annotated responses from the GPT API. The data frame has one column:
+"aitag" (the annotated response from GPT).
+The function also saves the annotated responses as a CSV file in the "LLMoutput/columnname/model/.csv" path.
 }
 \description{
 This function sends the text data from a dataframe to OpenAI's GPT API for annotation,
-based on a provided instruction. The GPT responses are saved as RDS files.
+based on a provided instruction. The GPT responses are saved as a CSV file.
 }
 \examples{
 \dontrun{
 my_data <- data.frame(
-id = 1:3,
-text = c("Example text 1", "Example text 2", "Example text 3")
+  id = c("1", "2", "3"),
+  text = c("Example text 1", "Example text 2", "Example text 3")
 )
-gpt_annotate(my_data$text, "Classify the sentiment of this text as positive, negative or neutral.")
+annotated_data <- tag_gpt(my_data$id,
+"Classify the sentiment of this text as positive, negative or neutral.")
 }
+
 }

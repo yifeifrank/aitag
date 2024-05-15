@@ -8,10 +8,8 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Imports:
-  httr,
+  httr2,
   dplyr,
-  purrr,
-  stringr,
-  tibble
+  stringr
 URL: https://github.com/Zeryfrank/GPT-annotater/
 BugReports: https://github.com/Zeryfrank/GPT-annotater/issues

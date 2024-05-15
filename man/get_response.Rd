@@ -2,38 +2,38 @@
 % Please edit documentation in R/get_response.R
 \name{get_response}
 \alias{get_response}
-\title{Retrieve GPT responses for a column}
+\title{Retrieve GPT responses from CSV file}
 \usage{
 get_response(column, model)
 }
 \arguments{
 \item{column}{The column for which to retrieve GPT responses. The name of this column
-is used to locate the directory containing the saved RDS files.}
+is used to locate the CSV file containing the saved responses.}
 
 \item{model}{The name of the GPT model used for annotation.}
 }
 \value{
-A tibble with columns:
+A data frame with columns:
 \describe{
 \item{id}{The "id" values from the original column.}
-\item{relevant_gpt}{The GPT-generated annotations, retrieved from the saved RDS files.}
+\item{annotated_text}{The GPT-generated annotations, retrieved from the saved CSV file.}
 }
+If the CSV file is not found, the function returns NULL and prints a warning message.
 }
 \description{
-This function retrieves the GPT responses saved as RDS files for a given column. It
-returns a tibble containing the "id" values from the original column and the corresponding
-GPT-generated annotations.
+This function retrieves the GPT responses saved as a CSV file for a given column. It
+returns a data frame containing the "id" values and the corresponding GPT-generated annotations.
 }
 \examples{
 \dontrun{
 my_data <- data.frame(
-id = 1:3,
-text = c("The cake is tasty", "The cake is terrible", "The cake is okay")
+  id = c("1", "2", "3"),
+  text = c("The cake is tasty", "The cake is terrible", "The cake is okay")
 )
 
-gpt_annotate(my_data, "Classify the sentiment of this text as positive, negative or neutral.")
+tag_gpt(my_data$id, "Classify the sentiment of this text as positive, negative or neutral.")
 
-annotations <- get_response(my_data)
+annotations <- get_response(my_data$id, "gpt-3.5-turbo-0125")
 }
 
 }

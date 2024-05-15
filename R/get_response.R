@@ -1,54 +1,46 @@
-#' Retrieve GPT responses for a column
+#' Retrieve GPT responses from CSV file
 #'
-#' This function retrieves the GPT responses saved as RDS files for a given column. It
-#' returns a tibble containing the "id" values from the original column and the corresponding
-#' GPT-generated annotations.
+#' This function retrieves the GPT responses saved as a CSV file for a given column. It
+#' returns a data frame containing the "id" values and the corresponding GPT-generated annotations.
 #'
 #' @param column The column for which to retrieve GPT responses. The name of this column
-#' is used to locate the directory containing the saved RDS files.
+#' is used to locate the CSV file containing the saved responses.
 #'
 #' @param model The name of the GPT model used for annotation.
 #'
-#' @return A tibble with columns:
+#' @return A data frame with columns:
 #' \describe{
-#' \item{id}{The "id" values from the original column.}
-#' \item{relevant_gpt}{The GPT-generated annotations, retrieved from the saved RDS files.}
+#'   \item{id}{The "id" values from the original column.}
+#'   \item{annotated_text}{The GPT-generated annotations, retrieved from the saved CSV file.}
 #' }
+#' If the CSV file is not found, the function returns NULL and prints a warning message.
 #'
 #' @examples
 #' \dontrun{
 #' my_data <- data.frame(
-#' id = 1:3,
-#' text = c("The cake is tasty", "The cake is terrible", "The cake is okay")
+#'   id = c("1", "2", "3"),
+#'   text = c("The cake is tasty", "The cake is terrible", "The cake is okay")
 #' )
 #'
-#' gpt_annotate(my_data, "Classify the sentiment of this text as positive, negative or neutral.")
+#' tag_gpt(my_data$id, "Classify the sentiment of this text as positive, negative or neutral.")
 #'
-#' annotations <- get_response(my_data)
+#' annotations <- get_response(my_data$id, "gpt-3.5-turbo-0125")
 #' }
 #'
-#' @importFrom purrr map_chr
-#' @importFrom httr content
-#' @importFrom stringr str_replace
-#' @importFrom tibble tibble
+#' @importFrom stringr str_c
+#' @importFrom utils read.csv
 #' @export
 get_response <- function(column, model) {
   columnname <- base::deparse(base::substitute(column))
-  filepath <- stringr::str_c("LLMoutput/", columnname, "/", model, "/")
-  file_names <- base::list.files(filepath, full.names = TRUE)
-  gpt_labels <- base::rep(NA, base::length(file_names))
-  for (i in base::seq_along(file_names)){
-    response <- base::readRDS(file_names[i])
-    gpt_labels[i] <-
-      ifelse(
-        base::is.null(httr::content(response)$choices[[1]]$message$content),
-        NA, httr::content(response)$choices[[1]]$message$content)
+  filepath <- stringr::str_c("LLMoutput/", columnname, "/", model, ".csv")
+
+  if (file.exists(filepath)) {
+    gptoutput <- utils::read.csv(filepath, stringsAsFactors = FALSE)
+    return(gptoutput)
+  } else {
+    warning(paste("CSV file not found at:", filepath))
+    return(NULL)
   }
-  gptoutput <- tibble::tibble(
-    id = stringr::str_replace(base::basename(file_names), "\\.rds$", ""),
-    annotated_text = gpt_labels
-  )
-  return(gptoutput)
 }
 
 

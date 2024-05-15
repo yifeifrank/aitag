@@ -2,12 +2,12 @@
 % Please edit documentation in R/pplx_api_call.R
 \name{tag_perplexity}
 \alias{tag_perplexity}
-\title{Annotate a dataframe using perplexity's models}
+\title{Annotate a dataframe using Perplexity's models}
 \usage{
 tag_perplexity(
   column,
   instruction = "Be precise and concise.",
-  api_key = "",
+  api_key = Sys.getenv("perplexity_key"),
   model = "mistral-7b-instruct",
   api_url = "https://api.perplexity.ai/chat/completions"
 )
@@ -15,31 +15,32 @@ tag_perplexity(
 \arguments{
 \item{column}{A character vector containing the data to be annotated.}
 
-\item{instruction}{A character string containing the instruction for the perplexity model to follow
-when annotating the text data.}
+\item{instruction}{A character string containing the instruction for the Perplexity model to follow
+when annotating the text data. Default is "Be precise and concise.".}
 
-\item{api_key}{The API key for authenticating with the perplexity API. By default, this is read
+\item{api_key}{The API key for authenticating with the Perplexity API. By default, this is read
 from the "perplexity_key" environment variable.}
 
-\item{model}{The name of the perplexity model to use for annotation. Default is "mistral-7b-instruct".}
+\item{model}{The name of the Perplexity model to use for annotation. Default is "mistral-7b-instruct".}
 
-\item{api_url}{The URL for the perplexity API endpoint. By default, this is set to
-"https://api.perplexity.ai/chat/completions".}
+\item{api_url}{The URL for the Perplexity API endpoint. Default is "https://api.perplexity.ai/chat/completions".}
 }
 \value{
-This function does not return a value. It saves the perplexity responses as RDS files in a
-directory named "LLMoutput/{dataframe_name}/{model}.rds".
+A data frame containing the annotated responses from the Perplexity API. The data frame has two columns:
+"id" (the index of the input text) and "response" (the annotated response from Perplexity).
+The function also saves the annotated responses as a CSV file in the "LLMoutput/dataframe_name/model.csv" path.
 }
 \description{
-This function sends the text data from a dataframe to perplexity's API for annotation,
-based on a provided instruction. The perplexity responses are saved as RDS files.
+This function sends the text data from a dataframe to Perplexity's API for annotation,
+based on a provided instruction. The Perplexity responses are saved as a CSV file.
 }
 \examples{
 \dontrun{
 my_data <- data.frame(
-id = 1:3,
-text = c("Example text 1", "Example text 2", "Example text 3")
+  id = 1:3,
+  text = c("Example text 1", "Example text 2", "Example text 3")
 )
-tag_perplexity(my_data$text, "Be precise and concise.")
+annotated_data <- tag_perplexity(my_data$text, "Be precise and concise.")
 }
+
 }
