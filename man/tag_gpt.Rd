@@ -2,51 +2,44 @@
 % Please edit documentation in R/openai_api_call.R
 \name{tag_gpt}
 \alias{tag_gpt}
-\title{Annotate a dataframe using OpenAI's GPT models}
+\title{Annotate Text Data Using OpenAI's GPT Models}
 \usage{
 tag_gpt(
-  column,
-  instruction = "",
+  user_prompt,
+  sys_prompt = "",
   temperature = 0,
-  api_key = Sys.getenv("openai_key"),
+  api_key = base::Sys.getenv("openai_key"),
+  api_url = base::Sys.getenv("openai_url"),
   model = "gpt-3.5-turbo-0125",
-  api_url = Sys.getenv("openai_url")
+  verbose = TRUE
 )
 }
 \arguments{
-\item{column}{A character vector containing the text data to be annotated.}
+\item{user_prompt}{A character vector containing the text data to be annotated.}
 
-\item{instruction}{A character string containing the instruction for the GPT model to follow
-when annotating the text data. Default is an empty string.}
+\item{sys_prompt}{A character string containing the instruction for the GPT model to follow when annotating the text data. Default is an empty string.}
 
-\item{temperature}{Numeric. The temperature parameter for the GPT model, controlling the
-randomness of the generated annotations. Default is 0.}
+\item{temperature}{Numeric. The temperature parameter for the GPT model, controlling the randomness of the generated annotations. Default is 0.}
 
-\item{api_key}{The API key for authenticating with the OpenAI API. By default, this is read
-from the "openai_key" environment variable.}
+\item{api_key}{The API key for authenticating with the OpenAI API. By default, this is read from the "openai_key" environment variable.}
+
+\item{api_url}{The URL for the OpenAI API endpoint. By default, this is read from the "openai_url" environment variable.}
 
 \item{model}{The name of the GPT model to use for annotation. Default is "gpt-3.5-turbo-0125".}
 
-\item{api_url}{The URL for the OpenAI API endpoint. By default, this is read from the
-"openai_url" environment variable.}
+\item{verbose}{Logical. If TRUE, prints progress and error messages. Default is TRUE.}
 }
 \value{
-A data frame containing the annotated responses from the GPT API. The data frame has one column:
-"aitag" (the annotated response from GPT).
+A character vector containing the annotated responses from the GPT API.
 The function also saves the annotated responses as a CSV file in the "LLMoutput/columnname/model/.csv" path.
 }
 \description{
-This function sends the text data from a dataframe to OpenAI's GPT API for annotation,
-based on a provided instruction. The GPT responses are saved as a CSV file.
+This function sends text data to OpenAI's GPT API for annotation based on a provided system prompt.
+The annotated responses are saved as a CSV file.
 }
 \examples{
 \dontrun{
-my_data <- data.frame(
-  id = c("1", "2", "3"),
-  text = c("Example text 1", "Example text 2", "Example text 3")
-)
-annotated_data <- tag_gpt(my_data$id,
-"Classify the sentiment of this text as positive, negative or neutral.")
+my_data <- c("Example text 1", "Example text 2", "Example text 3")
+annotated_data <- tag_gpt(my_data, sys_prompt = "Classify the sentiment of this text as positive, negative or neutral.")
 }
-
 }
