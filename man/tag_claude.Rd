@@ -42,7 +42,7 @@ The annotated responses are saved as a CSV file.
 }
 \examples{
 \dontrun{
-my_data <- c("Example text 1", "Example text 2", "Example text 3")
-annotated_data <- tag_claude(my_data, sys_prompt = "Summarize the main points of this text.")
+my_data <- c("Apple", "Tomato", "Broccoli")
+annotated_data <- tag_claude(my_data, sys_prompt = "Which one is a fruit?")
 }
 }

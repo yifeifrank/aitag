@@ -15,8 +15,8 @@
 #' The function also saves the annotated responses as a CSV file in the "LLMoutput/columnname/model.csv" path.
 #' @examples
 #' \dontrun{
-#' my_data <- c("Example text 1", "Example text 2", "Example text 3")
-#' annotated_data <- tag_claude(my_data, sys_prompt = "Summarize the main points of this text.")
+#' my_data <- c("Apple", "Tomato", "Broccoli")
+#' annotated_data <- tag_claude(my_data, sys_prompt = "Which one is a fruit?")
 #' }
 #' @importFrom httr2 request req_headers req_body_json req_timeout req_perform resp_body_json
 #' @importFrom stringr str_c
