@@ -27,7 +27,9 @@ tag_oobabooga(
   ban_eos_token = FALSE,
   skip_special_tokens = FALSE,
   api_url = "http://localhost:5000/api/v1/generate",
-  verbose = TRUE
+  verbose = TRUE,
+  storage = TRUE,
+  rate_limit = 0
 )
 }
 \arguments{
@@ -76,6 +78,10 @@ tag_oobabooga(
 \item{api_url}{The URL for the Oobabooga API endpoint. Default is "http://localhost:5000/api/v1/generate".}
 
 \item{verbose}{Logical. If TRUE, prints progress and error messages. Default is TRUE.}
+
+\item{storage}{Logical. If TRUE, saves the annotated responses as a CSV file. Default is TRUE.}
+
+\item{rate_limit}{Numeric. The rate limit for API requests in seconds. Default is 0s.}
 }
 \value{
 A character vector containing the annotated responses from the Oobabooga API.

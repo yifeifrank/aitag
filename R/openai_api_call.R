@@ -10,6 +10,8 @@
 #' @param api_url The URL for the OpenAI API endpoint. By default, this is read from the "openai_url" environment variable.
 #' @param model The name of the GPT model to use for annotation. Default is "gpt-3.5-turbo-0125".
 #' @param verbose Logical. If TRUE, prints progress and error messages. Default is TRUE.
+#' @param storage Logical. If TRUE, saves the annotated responses as a CSV file. Default is TRUE.
+#' @param rate_limit Numeric. The rate limit for API requests in seconds. Default is 0.6s.
 #' @return A character vector containing the annotated responses from the GPT API.
 #' The function also saves the annotated responses as a CSV file in the "LLMoutput/columnname/model/.csv" path.
 #' @examples
@@ -28,19 +30,15 @@ tag_gpt <- function(user_prompt,
                     api_key = base::Sys.getenv("openai_key"),
                     api_url = base::Sys.getenv("openai_url"),
                     model = "gpt-3.5-turbo-0125",
-                    verbose = TRUE) {
+                    verbose = TRUE,
+                    storage = TRUE,
+                    rate_limit = 0.6) {
 
   # Ensure the API URL is complete
   api_url <- stringr::str_c(api_url, "/v1/chat/completions")
 
   # Add filepath for output
   columnname <- base::deparse(base::substitute(user_prompt))
-  filepath0 <- stringr::str_c("LLMoutput/", columnname, "/")
-  if (!base::dir.exists(filepath0)) {
-    base::dir.create(filepath0, recursive = TRUE)
-  }
-  filepath <- stringr::str_c(filepath0, model, ".csv")
-  base::print(base::paste("Writing CSV file to:", filepath))
 
   # Function to process each text entry
   annotate_text <- function(text, index, total) {
@@ -53,7 +51,7 @@ tag_gpt <- function(user_prompt,
     result <- NA_character_
 
     while (!success && attempt <= max_attempts) {
-      base::Sys.sleep(0.6) # Sleep to avoid rate limiting
+      base::Sys.sleep(rate_limit) # Sleep to avoid rate limiting
       tryCatch({
         response <- httr2::request(api_url) |>
           httr2::req_headers(`Content-Type` = "application/json", `Authorization` = authorization) |>
@@ -103,7 +101,13 @@ tag_gpt <- function(user_prompt,
   annotations <- purrr::map2_chr(user_prompt, base::seq_along(user_prompt), ~annotate_text(.x, .y, base::length(user_prompt)))
 
   # Write the results to a CSV file
-  utils::write.csv(data.frame(aitag = annotations), filepath, row.names = FALSE)
+  if (storage) filepath0 <- stringr::str_c("llm_output/", columnname, "/")
+  if (storage) if (!base::dir.exists(filepath0)) {
+    base::dir.create(filepath0, recursive = TRUE)
+  }
+  if (storage) filepath <- stringr::str_c(filepath0, model, ".csv")
+  if (storage) base::print(base::paste("Writing CSV file to:", filepath))
+  if (storage) utils::write.csv(data.frame(sys_prompt=sys_prompt,user_prompt=user_prompt,aitag = annotations), filepath, row.names = FALSE)
 
   # Return the vector of annotations
   return(annotations)

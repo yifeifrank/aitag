@@ -10,7 +10,9 @@ tag_perplexity(
   api_key = base::Sys.getenv("perplexity_key"),
   model = "mistral-7b-instruct",
   api_url = "https://api.perplexity.ai/chat/completions",
-  verbose = TRUE
+  verbose = TRUE,
+  storage = TRUE,
+  rate_limit = 1
 )
 }
 \arguments{
@@ -25,6 +27,10 @@ tag_perplexity(
 \item{api_url}{The URL for the Perplexity API endpoint. Default is "https://api.perplexity.ai/chat/completions".}
 
 \item{verbose}{Logical. If TRUE, prints progress and error messages. Default is TRUE.}
+
+\item{storage}{Logical. If TRUE, saves the annotated responses as a CSV file. Default is TRUE.}
+
+\item{rate_limit}{Numeric. The rate limit for API requests in seconds. Default is 1s.}
 }
 \value{
 A character vector containing the annotated responses from the Perplexity API.

@@ -9,6 +9,8 @@
 #' @param model The name of the Perplexity model to use for annotation. Default is "mistral-7b-instruct".
 #' @param api_url The URL for the Perplexity API endpoint. Default is "https://api.perplexity.ai/chat/completions".
 #' @param verbose Logical. If TRUE, prints progress and error messages. Default is TRUE.
+#' @param storage Logical. If TRUE, saves the annotated responses as a CSV file. Default is TRUE.
+#' @param rate_limit Numeric. The rate limit for API requests in seconds. Default is 1s.
 #' @return A character vector containing the annotated responses from the Perplexity API.
 #' The function also saves the annotated responses as a CSV file in the "LLMoutput/columnname/model.csv" path.
 #' @examples
@@ -25,15 +27,12 @@ tag_perplexity <- function(user_prompt,
                            api_key = base::Sys.getenv("perplexity_key"),
                            model = "mistral-7b-instruct",
                            api_url = "https://api.perplexity.ai/chat/completions",
-                           verbose = TRUE) {
+                           verbose = TRUE,
+                           storage = TRUE,
+                           rate_limit = 1) {
   columnname <- base::deparse(base::substitute(user_prompt))
   api_key <- base::as.character(api_key)
-  filepath0 <- stringr::str_c("LLMoutput/", columnname, "/")
-  if (!base::dir.exists(filepath0)) {
-    base::dir.create(filepath0, recursive = TRUE)
-  }
-  filepath <- stringr::str_c(filepath0, model, ".csv")
-  if (verbose) base::print(base::paste("Writing CSV file to:", filepath))
+
 
   # Function to process each text entry
   annotate_text <- function(text, index, total) {
@@ -46,7 +45,7 @@ tag_perplexity <- function(user_prompt,
     result <- NA_character_
 
     while (!success && attempt <= max_attempts) {
-      base::Sys.sleep(0.6) # Sleep to avoid rate limiting
+      base::Sys.sleep(rate_limit) # Sleep to avoid rate limiting
       tryCatch({
         response <- httr2::request(api_url) |>
           httr2::req_headers(`Content-Type` = "application/json", `Authorization` = authorization) |>
@@ -95,7 +94,13 @@ tag_perplexity <- function(user_prompt,
   annotations <- purrr::map2_chr(user_prompt, base::seq_along(user_prompt), ~annotate_text(.x, .y, base::length(user_prompt)))
 
   # Write the results to a CSV file
-  utils::write.csv(base::data.frame(response = annotations), filepath, row.names = FALSE)
+  if (storage) filepath0 <- stringr::str_c("llm_output/", columnname, "/")
+  if (storage) if (!base::dir.exists(filepath0)) {
+    base::dir.create(filepath0, recursive = TRUE)
+  }
+  if (storage) filepath <- stringr::str_c(filepath0, model, ".csv")
+  if (storage) base::print(base::paste("Writing CSV file to:", filepath))
+  if (storage) utils::write.csv(data.frame(sys_prompt=sys_prompt,user_prompt=user_prompt,aitag = annotations), filepath, row.names = FALSE)
 
   # Return the vector of annotations
   return(annotations)

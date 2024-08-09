@@ -11,7 +11,9 @@ tag_gpt(
   api_key = base::Sys.getenv("openai_key"),
   api_url = base::Sys.getenv("openai_url"),
   model = "gpt-3.5-turbo-0125",
-  verbose = TRUE
+  verbose = TRUE,
+  storage = TRUE,
+  rate_limit = 0.6
 )
 }
 \arguments{
@@ -28,6 +30,10 @@ tag_gpt(
 \item{model}{The name of the GPT model to use for annotation. Default is "gpt-3.5-turbo-0125".}
 
 \item{verbose}{Logical. If TRUE, prints progress and error messages. Default is TRUE.}
+
+\item{storage}{Logical. If TRUE, saves the annotated responses as a CSV file. Default is TRUE.}
+
+\item{rate_limit}{Numeric. The rate limit for API requests in seconds. Default is 0.6s.}
 }
 \value{
 A character vector containing the annotated responses from the GPT API.

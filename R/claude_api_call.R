@@ -11,6 +11,8 @@
 #' @param api_key The API key for authenticating with the Claude API. By default, this is read from the "CLAUDE_API_KEY" environment variable.
 #' @param api_url The URL for the Claude API endpoint. Default is "https://api.anthropic.com".
 #' @param verbose Logical. If TRUE, prints progress and error messages. Default is TRUE.
+#' @param storage Logical. If TRUE, saves the annotated responses as a CSV file. Default is TRUE.
+#' @param rate_limit Numeric. The rate limit for API requests in seconds. Default is 0.6s.
 #' @return A character vector containing the annotated responses from the Claude API.
 #' The function also saves the annotated responses as a CSV file in the "LLMoutput/columnname/model.csv" path.
 #' @examples
@@ -29,14 +31,10 @@ tag_claude <- function(user_prompt,
                        temperature = 1,
                        api_key = base::Sys.getenv("CLAUDE_API_KEY"),
                        api_url = "https://api.anthropic.com",
-                       verbose = TRUE) {
+                       verbose = TRUE,
+                       storage = TRUE,
+                       rate_limit = 0.6) {
   columnname <- base::deparse(base::substitute(user_prompt))
-  filepath0 <- stringr::str_c("LLMoutput/", columnname, "/")
-  if (!base::dir.exists(filepath0)) {
-    base::dir.create(filepath0, recursive = TRUE)
-  }
-  filepath <- stringr::str_c(filepath0, model, ".csv")
-  if (verbose) base::print(base::paste("Writing CSV file to:", filepath))
 
   # Function to process each text entry
   annotate_text <- function(text, index, total) {
@@ -48,7 +46,7 @@ tag_claude <- function(user_prompt,
     result <- NA_character_
 
     while (!success && attempt <= max_attempts) {
-      base::Sys.sleep(0.6) # Sleep to avoid rate limiting
+      base::Sys.sleep(rate_limit) # Sleep to avoid rate limiting
       tryCatch({
         response <- httr2::request(stringr::str_c(api_url, "/v1/complete")) |>
           httr2::req_headers(`Content-Type` = "application/json",
@@ -97,7 +95,13 @@ tag_claude <- function(user_prompt,
   annotations <- purrr::map2_chr(user_prompt, base::seq_along(user_prompt), ~annotate_text(.x, .y, base::length(user_prompt)))
 
   # Write the results to a CSV file
-  utils::write.csv(base::data.frame(response = annotations), filepath, row.names = FALSE)
+  if (storage) filepath0 <- stringr::str_c("llm_output/", columnname, "/")
+  if (storage) if (!base::dir.exists(filepath0)) {
+    base::dir.create(filepath0, recursive = TRUE)
+  }
+  if (storage) filepath <- stringr::str_c(filepath0, model, ".csv")
+  if (storage) base::print(base::paste("Writing CSV file to:", filepath))
+  if (storage) utils::write.csv(data.frame(sys_prompt=sys_prompt,user_prompt=user_prompt,aitag = annotations), filepath, row.names = FALSE)
 
   # Return the vector of annotations
   return(annotations)

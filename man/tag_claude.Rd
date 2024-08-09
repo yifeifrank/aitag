@@ -12,7 +12,9 @@ tag_claude(
   temperature = 1,
   api_key = base::Sys.getenv("CLAUDE_API_KEY"),
   api_url = "https://api.anthropic.com",
-  verbose = TRUE
+  verbose = TRUE,
+  storage = TRUE,
+  rate_limit = 0.6
 )
 }
 \arguments{
@@ -31,6 +33,10 @@ tag_claude(
 \item{api_url}{The URL for the Claude API endpoint. Default is "https://api.anthropic.com".}
 
 \item{verbose}{Logical. If TRUE, prints progress and error messages. Default is TRUE.}
+
+\item{storage}{Logical. If TRUE, saves the annotated responses as a CSV file. Default is TRUE.}
+
+\item{rate_limit}{Numeric. The rate limit for API requests in seconds. Default is 0.6s.}
 }
 \value{
 A character vector containing the annotated responses from the Claude API.
