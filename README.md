@@ -38,7 +38,7 @@ Then, load the package and use the `aitag` function to annotate your text data:
 library(aitag)
 my_data <- c("Apple", "Tomato", "Broccoli")
 # Annotate data
-annotated_data <- tag_gpt(my_data, sys_prompt = "Which one is a fruit?")
+annotated_data <- tag_gpt(my_data, sys_prompt = "Is this fruit?")
 ```
 
 The annotated results will also be saved in the `gptoutput/` directory, and you can monitor the progress and annotated texts in real-time.
