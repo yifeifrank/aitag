@@ -5,12 +5,12 @@ aitag is an R package that provides a convenient way to annotate text data using
 
 ## Features
 
-- Annotate text data using GPT models
-- Save annotated files for future reference
-- Monitor annotated texts in real-time while running
-- Support for third-party GPT APIs
+- Annotate text data using LLMs models
+- Options for monitoring annotated texts in real-time while running
+- Support for third-party LLM proxies
 - Easy to resume from a break-point
-
+- Save annotated files for future reference
+  
 ## Installation
 
 You can install the aitag package from GitHub using the `devtools` package:
@@ -20,7 +20,7 @@ You can install the aitag package from GitHub using the `devtools` package:
 install.packages("devtools")
 
 # Install GPT-annotator from GitHub
-devtools::install_github("Zeryfrank/aitag")
+devtools::install_github("yifeifrank/aitag")
 ```
 
 ## Usage
@@ -36,14 +36,14 @@ Then, load the package and use the `aitag` function to annotate your text data:
 
 ```r
 library(aitag)
-
+my_data <- c("Apple", "Tomato", "Broccoli")
 # Annotate data
-gpt_annotate(your_dataframe, instruction = "Your instruction")
+annotated_data <- tag_gpt(my_data, sys_prompt = "Which one is a fruit?")
 ```
 
-The annotated files will be saved in the `gptoutput/` directory, and you can monitor the progress and annotated texts in real-time.
+The annotated results will also be saved in the `gptoutput/` directory, and you can monitor the progress and annotated texts in real-time.
 
-To retrieve the GPT responses, use the `get_response` function:
+To retrieve the LLM responses, use the `get_response` function:
 
 ```r
 # Get responses
