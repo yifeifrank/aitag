@@ -30,10 +30,7 @@ tag_perplexity <- function(user_prompt,
                            verbose = TRUE,
                            storage = TRUE,
                            rate_limit = 1) {
-  columnname <- base::deparse(base::substitute(user_prompt))
   api_key <- base::as.character(api_key)
-
-
   # Function to process each text entry
   annotate_text <- function(text, index, total) {
     to_annotate_text <- base::gsub("(\n|\r)", " ", text)
@@ -63,8 +60,10 @@ tag_perplexity <- function(user_prompt,
           response_content <- httr2::resp_body_json(response)
           result <- response_content$choices[[1]]$message$content
           success <- TRUE
-          if (verbose) base::message("status_id: ", index, " of ", total, "\n", "sys_prompt: ", sys_prompt, "\n", "user_prompt: ", to_annotate_text)
-          if (verbose) base::message("Perplexity: ", result, "\n")
+          if (verbose) {
+            base::message("status_id: ", index, " of ", total, "\n", "sys_prompt: ", sys_prompt, "\n", "user_prompt: ", to_annotate_text)
+            base::message("Perplexity: ", result, "\n")
+          }
         } else {
           # Capture and return the error message from the response
           error_content <- httr2::resp_body_json(response)
@@ -93,15 +92,38 @@ tag_perplexity <- function(user_prompt,
   # Vectorize the function to process all entries in the column
   annotations <- purrr::map2_chr(user_prompt, base::seq_along(user_prompt), ~annotate_text(.x, .y, base::length(user_prompt)))
 
-  # Write the results to a CSV file
-  if (storage) filepath0 <- stringr::str_c("llm_output/", columnname, "/")
-  if (storage) if (!base::dir.exists(filepath0)) {
-    base::dir.create(filepath0, recursive = TRUE)
-  }
-  if (storage) filepath <- stringr::str_c(filepath0, model, ".csv")
-  if (storage) base::print(base::paste("Writing CSV file to:", filepath))
-  if (storage) utils::write.csv(data.frame(sys_prompt=sys_prompt,user_prompt=user_prompt,aitag = annotations), filepath, row.names = FALSE)
+  if (storage) {
+    current_time <- Sys.time()
+    formatted_time <- format(current_time, "%Y-%m-%d_%H-%M-%S")
+    columnname <- base::deparse(base::substitute(user_prompt))
 
+    create_filepath <- function(columnname, model, formatted_time) {
+      # Create the directory if it does not exist
+      filepath0 <- stringr::str_c("llm_output/", columnname, "/")
+      if (!base::dir.exists(filepath0)) {
+        base::dir.create(filepath0, recursive = TRUE)
+      }
+      filepath <- stringr::str_c(filepath0, model, "_", formatted_time, ".csv")
+      return(filepath)
+    }
+
+    write_csv <- function(sys_prompt, user_prompt, annotations, current_time, filepath) {
+      # Print the filepath
+      base::print(base::paste("Writing CSV file to:", filepath))
+      # Write the CSV file
+      utils::write.csv(data.frame(
+        sys_prompt = sys_prompt,
+        user_prompt = user_prompt,
+        response = annotations,
+        time = current_time
+      ),
+      filepath,
+      row.names = FALSE)
+    }
+
+    filepath <- create_filepath(columnname, model, formatted_time)
+    write_csv(sys_prompt, user_prompt, annotations, current_time, filepath)
+  }
   # Return the vector of annotations
   return(annotations)
 }
