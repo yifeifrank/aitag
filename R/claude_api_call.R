@@ -34,6 +34,12 @@ tag_claude <- function(user_prompt,
                        verbose = TRUE,
                        storage = TRUE,
                        rate_limit = 0.6) {
+  # Check if sys_prompt is a vector and handle accordingly
+  if (is.vector(sys_prompt) && length(sys_prompt) == 1) {
+    sys_prompt <- rep(sys_prompt, length(user_prompt))  # Repeat the single prompt
+  } else if (is.vector(sys_prompt) && length(sys_prompt) != length(user_prompt)) {
+    stop("Length of sys_prompt must be 1 or equal to the length of user_prompt.")
+  }
   # Function to process each text entry
   annotate_text <- function(text, index, total) {
     to_annotate_text <- base::gsub("(\n|\r)", " ", text)
@@ -51,7 +57,7 @@ tag_claude <- function(user_prompt,
                              `x-api-key` = api_key) |>
           httr2::req_body_json(list(
             model = model,
-            prompt = stringr::str_c(sys_prompt, "\n\n", to_annotate_text),
+            prompt = stringr::str_c(sys_prompt[index], "\n\n", to_annotate_text),
             max_tokens_to_sample = max_tokens_to_sample,
             temperature = temperature
           )) |>
@@ -62,7 +68,7 @@ tag_claude <- function(user_prompt,
           response_content <- httr2::resp_body_json(response)
           result <- response_content$completion
           success <- TRUE
-          if (verbose) base::message("status_id: ", index, " of ", total, "\n", "sys_prompt: ", sys_prompt, "\n", "user_prompt: ", to_annotate_text)
+          if (verbose) base::message("status_id: ", index, " of ", total, "\n", "sys_prompt: ", sys_prompt[index], "\n", "user_prompt: ", to_annotate_text)
           if (verbose) base::message("Claude: ", result, "\n")
         } else {
           # Capture and return the error message from the response

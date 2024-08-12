@@ -16,8 +16,9 @@
 #' The function also saves the annotated responses as a CSV file in the "LLMoutput/columnname/model/.csv" path.
 #' @examples
 #' \dontrun{
-#' my_data <- c("Apple", "Tomato", "Broccoli")
-#' annotated_data <- tag_gpt(my_data, sys_prompt = "Which one is a fruit?")
+#' my_data <- tibble(c("Apple", "Tomato", "Broccoli"))
+#' system_prompt <- "Which one is a fruit?"
+#' annotated_data <- tag_gpt(my_data, sys_prompt = system_prompt)
 #' }
 #' @importFrom httr2 request req_headers req_body_json req_timeout req_perform resp_body_json
 #' @importFrom stringr str_c str_replace_all
@@ -37,6 +38,12 @@ tag_gpt <- function(user_prompt,
   # Ensure the API URL is complete
   api_url <- stringr::str_c(api_url, "/v1/chat/completions")
 
+  # Check if sys_prompt is a vector and handle accordingly
+  if (is.vector(sys_prompt) && length(sys_prompt) == 1) {
+    sys_prompt <- rep(sys_prompt, length(user_prompt))  # Repeat the single prompt
+  } else if (is.vector(sys_prompt) && length(sys_prompt) != length(user_prompt)) {
+    stop("Length of sys_prompt must be 1 or equal to the length of user_prompt.")
+  }
   # Function to process each text entry
   annotate_text <- function(text, index, total) {
     to_annotate_text <- stringr::str_replace_all(text, "(\n|\r)", " ")
@@ -56,7 +63,7 @@ tag_gpt <- function(user_prompt,
             model = model,
             temperature = temperature,
             messages = list(
-              list(role = "system", content = sys_prompt),
+              list(role = "system", content = sys_prompt[index]),
               list(role = "user", content = to_annotate_text)
             )
           )) |>
@@ -68,7 +75,7 @@ tag_gpt <- function(user_prompt,
           result <- response_content$choices[[1]]$message$content
           success <- TRUE
           if (verbose) {
-            base::message("status_id: ", index, " of ", total, "\n", "sys_prompt: ", sys_prompt, "\n", "user_prompt: ", to_annotate_text)
+            base::message("status_id: ", index, " of ", total, "\n", "sys_prompt: ", sys_prompt[index], "\n", "user_prompt: ", to_annotate_text)
             base::message("ChatGPT: ", result, "\n")
           }
         } else {
