@@ -8,7 +8,6 @@ aitag is an R package that provides a convenient way to annotate text data using
 - Annotate text data using LLMs models
 - Options for monitoring annotated texts in real-time while running
 - Support for third-party LLM proxies
-- Easy to resume from a break-point
 - Save annotated files for future reference
   
 ## Installation
