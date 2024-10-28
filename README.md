@@ -35,19 +35,22 @@ Sys.setenv(openai_url = "https://api.openai.com")
 Then, load the package and use the `aitag` function to annotate your text data:
 
 ```r
-library(aitag)
-my_data <- c("Apple", "Tomato", "Broccoli")
-# Annotate data
-annotated_data <- tag_gpt(my_data, sys_prompt = "Is this fruit?")
-```
+conference_report <- conference_report |>  
+  select(report_id,report) 
 
-The annotated results will also be saved in the `gptoutput/` directory, and you can monitor the progress and annotated texts in real-time.
+Sys.setenv("openai_key" = "")
+Sys.setenv("openai_url" = "")
+sys_prompt <- '<task>Based on the government conference report user provided, extract the participants of the conference, and their statement</task>
+<json_example>
+{"participent1":{"name":"name","statement":"statement"}}
+</json_example>'
 
-To retrieve the LLM responses, use the `get_response` function:
-
-```r
-# Get responses
-responses <- get_response(your_dataframe)
+person <- 
+  person |>    
+  mutate(job_annotate=tag_gpt(text,
+                              sys_prompt = sys_prompt,
+                              model='gpt-4o-2024-05-13',
+                              rate_limit = 0.1))
 ```
 
 ## Contributing
