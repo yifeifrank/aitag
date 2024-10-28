@@ -28,29 +28,26 @@ devtools::install_github("yifeifrank/aitag")
 To use the GPT-annotator package, you need to set up your OpenAI API key and URL as system environment variables (no need to add v1/chat/completions in openai_url):
 
 ```r
-Sys.setenv(openai_api = "your_api_key")
-Sys.setenv(openai_url = "https://api.openai.com")
+Sys.setenv("openai_key" = "")
+Sys.setenv("openai_url" = "")
 ```
 
 Then, load the package and use the `aitag` function to annotate your text data:
 
 ```r
-conference_report <- conference_report |>  
-  select(report_id,report) 
+sentences <- data.frame(text = c("I love programming!", "This is so boring.", "The weather is nice today."))
 
-Sys.setenv("openai_key" = "")
-Sys.setenv("openai_url" = "")
-sys_prompt <- '<task>Based on the government conference report user provided, extract the participants of the conference, and their statement</task>
-<json_example>
-{"participent1":{"name":"name","statement":"statement"}}
-</json_example>'
+# Define the system prompt for sentiment analysis
+sys_prompt <- '<task>judge the sentiment of the following sentence</task>'
 
-person <- 
-  person |>    
-  mutate(job_annotate=tag_gpt(text,
-                              sys_prompt = sys_prompt,
-                              model='gpt-4o-2024-05-13',
-                              rate_limit = 0.1))
+# Apply sentiment analysis using tag_gpt
+sentences <- sentences %>%
+  mutate(job_annotate = tag_gpt(text,
+                                 sys_prompt = sys_prompt,
+                                 model = 'gpt-4o-2024-05-13',
+                                 rate_limit = 0.1))
+# View the results
+print(sentences)
 ```
 
 ## Contributing
